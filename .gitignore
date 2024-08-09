@@ -122,6 +122,14 @@ celerybeat.pid
 *.sage.py
 
 # Environments
+.Insurance
+.Insurance
+Insurance/
+Insurance/
+Insurance/
+Insurance.bak/
+Insurance.bak/
+
 .env
 .venv
 env/
