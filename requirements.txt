@@ -16,3 +16,4 @@ stats
 statsmodels
 Pillow
 wordCloud
+category_encoders
