@@ -130,6 +130,12 @@ Insurance/
 Insurance.bak/
 Insurance.bak/
 
+
+.insurance
+.insurance/
+insurance/
+insurance.bak/
+insurance.bak
 .env
 .venv
 env/
