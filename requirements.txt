@@ -2,17 +2,12 @@ pandas
 numpy
 seaborn
 matplotlib
-scikit_learn
 kneed
 scipy
 streamlit
 streamlit_option_menu
-streamlit_extras
 xgboost
-imblearn
-ipykernel
 colorama
-stats
 statsmodels
 Pillow
 wordCloud
