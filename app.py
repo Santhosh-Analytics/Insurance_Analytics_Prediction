@@ -211,7 +211,6 @@ elif selected == "Customer Profile Input":
         st.write(' ')
         st.write(' ')
         button = st.button('Get Insights!')
-        st.write(st.session_state.navigate_to_insights)
     
     
 #     
@@ -259,6 +258,7 @@ elif selected == "Customer Profile Input":
     # st.write(scaled_data)
     
     st.session_state.data = data
+    st.session_state.navigate_to_insights = True
 
     if button:
         if st.session_state.data is not None:
@@ -291,11 +291,14 @@ elif selected == "Customer Profile Input":
         # st.info(f"On average, Genie's predictions are within approximately 10 to 20% of the actual market prices.")
         
 elif selected == "Customer Insights":
-    st.title("Customer Insights")
+    st.title("Customer Insights:")
+    
+    st.header("Customer Segment Overview:")
+    st.image('Cluster_0.png',use_column_width=True)
+    
     if st.session_state.prediction is not None:
         st.write("K-means Prediction:", st.session_state.prediction['kmeans'])
-        st.
         st.write("Classification Prediction:", st.session_state.prediction['classification'])
         st.write("Regression Prediction:", st.session_state.prediction['regression'])
     else:
-        st.write("No prediction available. Please run a prediction first.")
+        st.write("No prediction available. Please update data in the 'Cutomer Profile Input' and hit 'Get Insights'.")
