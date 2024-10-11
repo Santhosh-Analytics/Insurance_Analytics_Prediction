@@ -9,6 +9,7 @@ from datetime import date, timedelta
 from streamlit_option_menu import option_menu
 from scipy.special import inv_boxcox
 import warnings
+from sklearn.preprocessing import StandardScaler, RobustScaler,MinMaxScaler,LabelEncoder
 
 # Set page configuration
 st.set_page_config(
@@ -61,9 +62,6 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-def reset_form():
-    st.session_state.data = None
-    st.session_state.prediction = None
 
 # Function to perform Box-Cox transformation on a single value using a given lambda
 def transform_single_value(value, lmbda):
@@ -79,15 +77,16 @@ def reverse_boxcox_transform(predicted, lambda_val):
     return inv_boxcox(predicted, lambda_val)
 
 # Load the saved lambda values
-with open(r'pkls/transformation/transformation_params.pkl', 'rb') as f:
+with open(r'pkls/transformations/transformation_params.pkl', 'rb') as f:
     lambda_dict = pickle.load(f)
 
 with open(r'pkls/edu_en.pkl', 'rb') as f:
     edu_pickle = pickle.load(f)
 
     
-# with open(r'pkls/scale_reg.pkl', 'rb') as f:
-    # scale_reg = pickle.load(f)
+with open(r'pkls/scale_reg.pkl', 'rb') as f:
+    scale_reg = pickle.load(f)
+    
 with open(r'pkls/K_means.pkl', 'rb') as f:
     kmeans = pickle.load(f)
 
@@ -101,22 +100,12 @@ with open(r'pkls/GB_Regressor.pkl', 'rb') as f:
 
     
     
-if 'current_page' not in st.session_state:
-    st.session_state.current_page = 'About'
-if 'data' not in st.session_state:
-    st.session_state.data = None
-if 'prediction' not in st.session_state:
-    st.session_state.prediction = None
-if 'should_navigate' not in st.session_state:
-    st.session_state.should_navigate = False
- 
-
     
 with st.sidebar:
     st.markdown("<hr style='border: 2px solid #ffffff;'>", unsafe_allow_html=True)
     
     selected = option_menu(
-        "Main Menu", ["About", 'Customer Profile Input', 'Customer Insights'],
+        "Main Menu", ["About", 'Customer Insights and Predictions', 'Customer Insights'],
         icons=['house-door-fill', 'bar-chart-fill'],
         menu_icon="cast",
         default_index=0,
@@ -130,16 +119,16 @@ with st.sidebar:
     )
     st.markdown("<hr style='border: 2px solid #ffffff;'>", unsafe_allow_html=True)
 
-if st.session_state.should_navigate:
-    selected = 'Customer Insights'
-    st.session_state.should_navigate = False
+
     
 st.markdown("<h1 style='text-align: center; font-size: 38px; color: #808080; font-weight: 700; font-family: inherit;'>Insurance Analytics & Insights</h1>", unsafe_allow_html=True)
 st.markdown("<h4 style='text-align: center; font-size: 26px; color: #808080; font-weight: 200; font-family: inherit;'>Data-Driven Solutions for Customer Segmentation and Fraud Detection</h4>", unsafe_allow_html=True)
 
 st.markdown("<hr style='border: 2px solid beige;'>", unsafe_allow_html=True)
 
+
 if selected == "About":
+    
     st.markdown("<h3 style='text-align: center; font-size: 38px; color: #ffffff; font-weight: 700; font-family: inherit;'>Understanding Insurance Insights</h3>", unsafe_allow_html=True)
 
     st.markdown("<h3 style='font-size: 30px; text-align: left; font-family: inherit; color: #FBBC05;'> Overview </h3>", unsafe_allow_html=True)
@@ -174,9 +163,19 @@ if selected == "About":
         Contributions to this project are welcome. If you find any issues or have suggestions for improvements, please open an issue or submit a pull request in the <a href="{}">GitHub Repository</a>.
     </p>""".format(github_url), unsafe_allow_html=True)
 
-elif selected == "Customer Profile Input":
+if selected == "Customer Insights and Predictions":
     st.title("Customer Profile")
 
+    selected2 = option_menu(None, ["Customer Characters", "Fraud Detection", "Claim Amount Prediction"], 
+    icons=['house', 'cloud-upload', "list-task"], 
+    menu_icon="cast", default_index=0, orientation="horizontal",
+    styles={
+        "container": {"padding": "0!important", "background-color": "#fafafa"},
+        "icon": {"color": "orange", "font-size": "25px"}, 
+        "nav-link": {"font-size": "25px", "text-align": "left", "margin":"0px", "--hover-color": "#eee"},
+        "nav-link-selected": {"background-color": "green"},
+    }
+        )
 
     # Options for various dropdowns
     states = ('OH', 'IL', 'IN')
@@ -214,8 +213,14 @@ elif selected == "Customer Profile Input":
         policy_state = st.selectbox('Select policy State:', states    ,  help="Select Policy State/Location" )
         policy_deduc = st.selectbox('Select deductable:', policy_deduc_opt,  help="Portion of a claim that policy holder responsible to pay." )
         policy_premium = st.number_input('Enter annual premium amount:', help="Enter annual premium amount",step = 100)
-        claim_amount = st.number_input('Enter claim amount:', help="Enter claim amount",step = 100)
+        st.write('Policy Premium:', policy_premium)
+
+        vehi_claim_amount = st.number_input('Enter vehicle claim amount:', help="Enter vehicle claim amount",step = 100)
+        st.write('Vehicle Claim Amount:', vehi_claim_amount)
+
         cust_age = st.number_input('Enter the Customer age:', help="Enter the Customer age:",step=1)
+        st.write('Customer Age:', cust_age)
+
         insured_sex = st.selectbox('Select gender:', ['Male', 'Female'],  help="Customer Gender")
         education = st.selectbox('Select education:', edu_opt, help="Customer education Level")
         occupation = st.selectbox('Select occupation:', occu_opt,  help="Customer occupation")
@@ -244,7 +249,6 @@ elif selected == "Customer Profile Input":
         button = st.button('Get Insights!')
     
     
-#     
 
     sex = {'Male': 1, 'Female':0}
     
@@ -255,71 +259,81 @@ elif selected == "Customer Profile Input":
                 encoded_edu = edu_pickle.transform([education])[0]
         except Exception as e:
             st.error(f"Error encoding education: {e}")
-            encoded_edu = None  # or some default value
+            encoded_edu = None  
     
     coll_array = [0] * len(collision_opt)
     selected_index = collision_opt.index(collision_type)
     coll_array[selected_index]= 1
-    coll_str = ', '.join(map(str, coll_array))
-    # st.write(coll_str)
+   
     
     inc_array = [0] * len(incident_opt)
     selected_inc_index = incident_opt.index(incident_type)
     inc_array[selected_inc_index]= 1
-    inc_str = ', '.join(map(str, inc_array))
-    # st.write(inc_str)
+    
     
     rela_array = [0] * len(insured_opt)
     selected_rela_index = insured_opt.index(insured)
     rela_array[selected_rela_index]= 1
-    rela_str = ', '.join(map(str, rela_array))
-    # st.write(rela_str)
+    
     
     hobbies_array = [0] * len(hobbies_opt)
     selected_hoobies_index = hobbies_opt.index(hobbies)
     hobbies_array[selected_hoobies_index]= 1
-    hobbies_str = ', '.join(map(str, hobbies_array))
-    
-    age_box = transform_single_value(cust_age, lambda_dict.get('age_boxcox'))
     
     
-    st.write(encoded_edu)
     
-    data_clus = np.array([[cust_month,policy_deduc,sex[insured_sex],year,encoded_edu, age_box]  + coll_array + \
-        hobbies_array + rela_array + inc_array ])
+    age_box = transform_single_value(cust_age, lambda_dict.get('age_boxcox')) if cust_age and cust_age > 0 else None
+    policy_premium_box = transform_single_value(policy_premium, lambda_dict.get('policy_annual_premium_boxcox')) if policy_premium and policy_premium > 0  else None
+    vehicle_claim_box = transform_single_value(vehi_claim_amount, lambda_dict.get('vehicle_claim_boxcox')) if vehi_claim_amount and vehi_claim_amount >0  else None
     
-    data_reg = np.array([[cust_month,policy_state,policy_state,sex[insured_sex],encoded_edu,occupation,hobbies,insured,
-                          incident_type,collision_type,incident_severity,]])
-    st.write(data_clus)
-    st.write(data_reg)
-    # scaled_data = scale_reg.transform(data)
-    # st.write(scaled_data)
-    
-    st.session_state.data_clus = data_clus
-    st.session_state.navigate_to_insights = True
 
-    if button:
-        if st.session_state.data_clus is not None:
-            try:
+    
+    data_clus = np.array([[cust_month,policy_deduc,sex[insured_sex],year,encoded_edu, age_box]  + coll_array + hobbies_array + rela_array + inc_array ])
+    st.write('Clustering Data:','\n',data_clus)
+    
+    data_reg = np.array([[incident_severity, collision_type, policy_premium_box, cust_month, age_box, auto_make] + 
+                         hobbies_array +  [occupation, vehicle_claim_box] ])
+    st.write('Regression Data:','\n',data_reg)
+    
+    
+    
+    
+    # fea2 = ['incident_severity', 'collision_type','policy_annual_premium_boxcox', 'months_as_customer','age_boxcox',
+    #     'insurance_age','auto_make','insured_hobbies','insured_occupation','vehicle_claim_boxcox',]
+    
+    # Continuous columns: ['age_boxcox', 'policy_annual_premium_boxcox', 'insurance_age', 'vehicle_age', 'auto_year']
+    # Nominal columns: ['policy_state', 'insured_sex', 'insured_occupation', 'insured_hobbies', 'insured_relationship', 'incident_type', 'collision_type', 'authorities_contacted', 'incident_state', 'incident_city', 'property_damage', 'police_report_available', 'auto_make', 'fraud_reported']
+    
+    # st.write(scale_reg)
+    # scaled_data_reg = scale_reg.transform(data_reg)
+    # st.write(scaled_data_reg)
+    
+    
+    # st.session_state.data_clus = data_clus
+    # st.session_state.data_reg = data_reg
+
+    # if button:
+        # if st.session_state.data_clus is not None and st.session_state.data_reg is not None:
+            # try:
                 # Your prediction logic here
-                kmeans_prediction = kmeans.predict(st.session_state.data_clus)
+                # kmeans_prediction = kmeans.predict(st.session_state.data_clus)
                 # class_prediction = Class_model.predict(st.session_state.data_clus)
                 # reg_prediction = Reg_model.predict(st.session_state.data_clus)
                 
                 # Store predictions in session state
-                st.session_state.prediction = {
-                    'kmeans': kmeans_prediction,
+                # st.session_state.prediction = {
+                #     'kmeans': kmeans_prediction,
                     # 'classification': class_prediction,
                     # 'regression': reg_prediction
-                }
+                # }
                 
                 # Set flag to navigate to Customer Insights
-                st.session_state.should_navigate = True
-                st.experimental_rerun()
-            except Exception as e:
-                st.error(f"Error: {e}")
-        else:
-            st.warning("Please enter customer data before running the prediction.")
+    #             st.session_state.current_page = "Customer Insights"
+    #             st.experimental_rerun()
+    #         except Exception as e:
+    #             st.error(f"Error: {e}")
+    # else:
+    #     st.warning("Please enter customer data before running the prediction.")
                 
         # st.write(prediction)
         # lambda_val = lambda_dict['resale_price_lambda'] 
@@ -327,8 +341,10 @@ elif selected == "Customer Profile Input":
         # rounded_prediction = round(transformed_predict[0],2)
         # st.success(f"Based on the input, the Genie's price is,  {rounded_prediction:,.2f}")
         # st.info(f"On average, Genie's predictions are within approximately 10 to 20% of the actual market prices.")
-        
+    # else:
+    st.write('End of profile')
 elif selected == "Customer Insights":
+    
     st.markdown("# <span style='color:blue;'>Customer Insights:</span>", unsafe_allow_html=True)
 
     st.markdown("""<p style='text-align: left; font-size: 22px; color: #ffffff; font-weight: 400; font-family: inherit;text-indent: 4em;'>
@@ -337,10 +353,9 @@ elif selected == "Customer Insights":
 
 </p>""", unsafe_allow_html=True)
     
-    if st.button("Go Back"):
-        reset_form()
-        st.session_state.current_page = "Customer Profile Input"
-        st.experimental_rerun()
+    # if st.button("Go Back"):
+        # st.session_state.current_page = "Customer Profile Input"
+        # st.experimental_rerun()
     
     selected2 = option_menu(None, ["Segment Overview", "Fraud Detection", "Claim Amount Prediction"], 
     icons=['house', 'cloud-upload', "list-task"], 
@@ -355,7 +370,8 @@ elif selected == "Customer Insights":
     
     if selected2 == 'Segment Overview':
         st.markdown("## <span style='color:blue;'>Customer Segment Overview:</span>", unsafe_allow_html=True)
-        
+        if st.button('Test'):
+            selected2 == "Fraud Detection"
         
         if 'prediction' in st.session_state and st.session_state.prediction is not None and 'kmeans' in st.session_state.prediction:
             # kmeans_prediction = st.session_state.prediction['kmeans']
@@ -376,9 +392,9 @@ elif selected == "Customer Insights":
     
     
     
-    # if st.session_state.prediction is not None:
-    #     st.write("K-means Prediction:", st.session_state.prediction['kmeans'])
-    #     # st.write("Classification Prediction:", st.session_state.prediction['classification'])
-    #     # st.write("Regression Prediction:", st.session_state.prediction['regression'])
-    # else:
-    #     st.info("No prediction available. Please update data in the 'Cutomer Profile Input' and hit 'Get Insights'.")
+    if st.session_state.prediction is not None:
+        st.write("K-means Prediction:", st.session_state.prediction['kmeans'])
+        # st.write("Classification Prediction:", st.session_state.prediction['classification'])
+        # st.write("Regression Prediction:", st.session_state.prediction['regression'])
+    else:
+        st.info("No prediction available. Please update data in the 'Cutomer Profile Input' and hit 'Get Insights'.")
