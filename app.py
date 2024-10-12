@@ -111,10 +111,14 @@ with st.sidebar:
         default_index=0,
         key='menu_option',
         styles={
-            "container": {"padding": "12!important", "background-color": "#fafafa"},
-            "icon": {"color": "orange", "font-size": "25px", "font-family": "Roboto Condensed"},
-            "nav-link": {"font-family": "inherit", "font-size": "22px", "color": "#ffffff", "text-align": "left", "margin": "0px", "--hover-color": "#84706E"},
-            "nav-link-selected": {"font-family": "inherit", "background-color": "#ffffff", "color": "#55ACEE", "font-size": "25px"},
+            "container": {"padding": "12!important", "background-color": "#fafafa","border-radius": "10px","transparency":"real",
+                      "box-shadow": "0 4px 8px #ddd","font":"JetBrainsMono Nerd Font","border": "1px solid #ddd",},
+            "icon": {"color": "orange", "font-size": "25px", "font-family": "Roboto Condensed","box-shadow": "0 4px 8px #ddd","text-shadow": "1px 1px 2px rgba(0, 0, 0, 0.2)"},
+            "nav-link": {"font-size": "22px", "color": "#ffffff", "text-align": "left", "margin": "0px", 
+                         "--hover-color": "#eee","box-shadow": "0 4px 8px #ddd","font":"JetBrainsMono Nerd Font","border": "1px solid #ddd", "cursor": "pointer", 
+                     "transition": "background-color 0.3s ease, color 0.3s ease" },
+            "nav-link-selected": {"background-color": "Aquamarine", "border-radius":"15px","transparency":"real","box-shadow": "0 4px 8px #ddd",
+                              "font":"JetBrainsMono Nerd Font","border": "1px solid #ddd"}
         }
     )
     st.markdown("<hr style='border: 2px solid #ffffff;'>", unsafe_allow_html=True)
@@ -170,10 +174,14 @@ if selected == "Customer Insights and Predictions":
     icons=['house', 'cloud-upload', "list-task"], 
     menu_icon="cast", default_index=0, orientation="horizontal",
     styles={
-        "container": {"padding": "0!important", "background-color": "#fafafa"},
-        "icon": {"color": "orange", "font-size": "25px"}, 
-        "nav-link": {"font-size": "25px", "text-align": "left", "margin":"0px", "--hover-color": "#eee"},
-        "nav-link-selected": {"background-color": "green"},
+        "container": {"padding": "0!important", "background-color": "#fafafa","border-radius": "10px","transparency":"real",
+                      "box-shadow": "0 4px 8px #ddd","font":"JetBrainsMono Nerd Font","border": "1px solid #ddd",},
+        "icon": {"color": "orange", "font-size": "25px","box-shadow": "0 4px 8px #ddd","text-shadow": "1px 1px 2px rgba(0, 0, 0, 0.2)" }, 
+        "nav-link": {"font-size": "25px", "text-align": "left", "margin":"0px", "--hover-color": "#eee","box-shadow": "0 4px 8px #ddd",
+                     "font":"JetBrainsMono Nerd Font","border": "1px solid #ddd", "cursor": "pointer", 
+                     "transition": "background-color 0.3s ease, color 0.3s ease" },
+        "nav-link-selected": {"background-color": "Bisque", "border-radius":"15px","transparency":"real","box-shadow": "0 4px 8px #ddd",
+                              "font":"JetBrainsMono Nerd Font","border": "1px solid #ddd"}
     }
         )
 
@@ -205,95 +213,164 @@ if selected == "Customer Insights and Predictions":
     fir_opt = ['NO', 'YES']
     
     
-    col1, col, col2 = st.columns([2,.5,2])
+    
+    
+    # col1, col, col2 = st.columns([2,.5,2])
     
 
-    with col1:
-        cust_month = st.number_input('Enter the Customer tenure ranges:', help="Enter the Customer tenure ranges. If new customer enter 0:",step = 1)
-        policy_state = st.selectbox('Select policy State:', states    ,  help="Select Policy State/Location" )
-        policy_deduc = st.selectbox('Select deductable:', policy_deduc_opt,  help="Portion of a claim that policy holder responsible to pay." )
-        policy_premium = st.number_input('Enter annual premium amount:', help="Enter annual premium amount",step = 100)
-        st.write('Policy Premium:', policy_premium)
+    # with col1:
+    #     cust_month = st.number_input('Enter the Customer tenure ranges:', help="Enter the Customer tenure ranges. If new customer enter 0:",step = 1)
+    #     policy_state = st.selectbox('Select policy State:', states    ,  help="Select Policy State/Location" )
+    #     policy_deduc = st.selectbox('Select deductable:', policy_deduc_opt,  help="Portion of a claim that policy holder responsible to pay." )
+    #     policy_premium = st.number_input('Enter annual premium amount:', help="Enter annual premium amount",step = 100)
+    #     st.write('Policy Premium:', policy_premium)
 
-        vehi_claim_amount = st.number_input('Enter vehicle claim amount:', help="Enter vehicle claim amount",step = 100)
-        st.write('Vehicle Claim Amount:', vehi_claim_amount)
+    #     vehi_claim_amount = st.number_input('Enter vehicle claim amount:', help="Enter vehicle claim amount",step = 100)
+    #     st.write('Vehicle Claim Amount:', vehi_claim_amount)
 
-        cust_age = st.number_input('Enter the Customer age:', help="Enter the Customer age:",step=1)
-        st.write('Customer Age:', cust_age)
+    #     cust_age = st.number_input('Enter the Customer age:', help="Enter the Customer age:",step=1)
+    #     st.write('Customer Age:', cust_age)
 
-        insured_sex = st.selectbox('Select gender:', ['Male', 'Female'],  help="Customer Gender")
-        education = st.selectbox('Select education:', edu_opt, help="Customer education Level")
-        occupation = st.selectbox('Select occupation:', occu_opt,  help="Customer occupation")
-        hobbies = st.selectbox('Select hobbies:', hobbies_opt,  help="Select hobbies") 
-        insured = st.selectbox('Select insured relation:', insured_opt,  help="Select insured relation")
-        fraud = st.selectbox('Select Fraud :', [True,False],  help="Select insured relation")
+    #     insured_sex = st.selectbox('Select gender:', ['Male', 'Female'],  help="Customer Gender")
+    #     education = st.selectbox('Select education:', edu_opt, help="Customer education Level")
+    #     occupation = st.selectbox('Select occupation:', occu_opt,  help="Customer occupation")
+    #     hobbies = st.selectbox('Select hobbies:', hobbies_opt,  help="Select hobbies") 
+    #     insured = st.selectbox('Select insured relation:', insured_opt,  help="Select insured relation")
+    #     fraud = st.selectbox('Select Fraud :', [True,False],  help="Select insured relation")
         
-    with col2:
-        auto_make = st.selectbox('Select auto make:', make_opt, help="Select Vehicle make")
-        year = st.selectbox('Select make year:', [i for i in range(1994, 2016)],  help="Select Vehicle make year")
-        incident_type = st.selectbox('Select incident type:', incident_opt,  help="Select incident type") 
-        collision_type = st.selectbox('Select Collision type:', collision_opt, help="Select Collision type")
-        incident_severity = st.selectbox('Select Incident severity:', severity_opt, help="Select severity type")
-        auth = st.selectbox('Authority Contacted:', auth_opt, help="Has any goverment authority contacted?")
-        city = st.selectbox('Incident City:', city_opt, help="City where the incodent occured.")
-        hour = st.selectbox('Incident Time:', hour_opt, help="Time when the incodent occured.")
-        no_of_veh = st.selectbox('No of Vehicle Involved:', vehicle_opt, help="Vehicles count that met with an incident.")
-        prpty_dmg = st.selectbox('Property Damage:', prpty_dmg_opt, help="Any property damaged due to the incident.")
-        injury = st.selectbox('Injury:', injury_opt, help="No of people injured.")
-        wit = st.selectbox('No of witness:', wit_opt, help="No of witness for the incident.")
-        fir = st.selectbox('Police Report:', fir_opt, help="Reported to police.")
+    # with col2:
+    #     auto_make = st.selectbox('Select auto make:', make_opt, help="Select Vehicle make")
+    #     year = st.selectbox('Select make year:', [i for i in range(1994, 2016)],  help="Select Vehicle make year")
+    #     incident_type = st.selectbox('Select incident type:', incident_opt,  help="Select incident type") 
+    #     collision_type = st.selectbox('Select Collision type:', collision_opt, help="Select Collision type")
+    #     incident_severity = st.selectbox('Select Incident severity:', severity_opt, help="Select severity type")
+    #     auth = st.selectbox('Authority Contacted:', auth_opt, help="Has any goverment authority contacted?")
+    #     city = st.selectbox('Incident City:', city_opt, help="City where the incodent occured.")
+    #     hour = st.selectbox('Incident Time:', hour_opt, help="Time when the incodent occured.")
+    #     no_of_veh = st.selectbox('No of Vehicle Involved:', vehicle_opt, help="Vehicles count that met with an incident.")
+    #     prpty_dmg = st.selectbox('Property Damage:', prpty_dmg_opt, help="Any property damaged due to the incident.")
+    #     injury = st.selectbox('Injury:', injury_opt, help="No of people injured.")
+    #     wit = st.selectbox('No of witness:', wit_opt, help="No of witness for the incident.")
+    #     fir = st.selectbox('Police Report:', fir_opt, help="Reported to police.")
 
+    if selected2 == "Customer Characters":
+        col1, col, col2 = st.columns([2,.5,2])
+        with col1:
+            insured_sex = st.selectbox('Select gender:', ['Male', 'Female'],  help="Customer Gender")
+            education = st.selectbox('Select education:', edu_opt, help="Customer education Level")
+            cust_age = st.number_input('Enter the Customer age:', help="Enter the Customer age:",step=1)
+            hobbies = st.selectbox('Select hobbies:', hobbies_opt,  help="Select hobbies") 
+            insured = st.selectbox('Select insured relation:', insured_opt,  help="Select insured relation")
+            
+        with col2:
+            cust_month = st.number_input('Enter the Customer tenure ranges:', help="Enter the Customer tenure ranges. If new customer enter 0:",step = 1)
+            policy_deduc = st.selectbox('Select deductable:', policy_deduc_opt,  help="Portion of a claim that policy holder responsible to pay." )
+            year = st.selectbox('Select make year:', [i for i in range(1994, 2016)],  help="Select Vehicle make year")
+            collision_type = st.selectbox('Select Collision type:', collision_opt, help="Select Collision type")
+            incident_type = st.selectbox('Select incident type:', incident_opt,  help="Select incident type") 
+            
        
-        st.write(' ')
-        st.write(' ')
-        button = st.button('Get Insights!')
+        
     
     
+        
 
-    sex = {'Male': 1, 'Female':0}
+        sex = {'Male': 1, 'Female':0}
+        
+        if education:
+            try:
+                with warnings.catch_warnings():
+                    warnings.simplefilter("ignore")
+                    encoded_edu = edu_pickle.transform([education])[0]
+            except Exception as e:
+                st.error(f"Error encoding education: {e}")
+                encoded_edu = None  
+        
+        coll_array = [0] * len(collision_opt)
+        selected_index = collision_opt.index(collision_type)
+        coll_array[selected_index]= 1
     
-    if education:
-        try:
-            with warnings.catch_warnings():
-                warnings.simplefilter("ignore")
-                encoded_edu = edu_pickle.transform([education])[0]
-        except Exception as e:
-            st.error(f"Error encoding education: {e}")
-            encoded_edu = None  
+        
+        inc_array = [0] * len(incident_opt)
+        selected_inc_index = incident_opt.index(incident_type)
+        inc_array[selected_inc_index]= 1
+        
+        
+        rela_array = [0] * len(insured_opt)
+        selected_rela_index = insured_opt.index(insured)
+        rela_array[selected_rela_index]= 1
+        
+        
+        hobbies_array = [0] * len(hobbies_opt)
+        selected_hoobies_index = hobbies_opt.index(hobbies)
+        hobbies_array[selected_hoobies_index]= 1
+        
+        
+        
+        age_box = transform_single_value(cust_age, lambda_dict.get('age_boxcox')) if cust_age and cust_age > 0 else None
+        
+          
+        
+        button = st.button('Get Insights!') if (cust_age is not None and cust_month is not None and cust_age > 0 and cust_month > 0) else st.info('Please update customer informations to proceed.')
+        preds=0
+        
     
-    coll_array = [0] * len(collision_opt)
-    selected_index = collision_opt.index(collision_type)
-    coll_array[selected_index]= 1
-   
-    
-    inc_array = [0] * len(incident_opt)
-    selected_inc_index = incident_opt.index(incident_type)
-    inc_array[selected_inc_index]= 1
-    
-    
-    rela_array = [0] * len(insured_opt)
-    selected_rela_index = insured_opt.index(insured)
-    rela_array[selected_rela_index]= 1
-    
-    
-    hobbies_array = [0] * len(hobbies_opt)
-    selected_hoobies_index = hobbies_opt.index(hobbies)
-    hobbies_array[selected_hoobies_index]= 1
-    
-    
-    
-    age_box = transform_single_value(cust_age, lambda_dict.get('age_boxcox')) if cust_age and cust_age > 0 else None
-    policy_premium_box = transform_single_value(policy_premium, lambda_dict.get('policy_annual_premium_boxcox')) if policy_premium and policy_premium > 0  else None
-    vehicle_claim_box = transform_single_value(vehi_claim_amount, lambda_dict.get('vehicle_claim_boxcox')) if vehi_claim_amount and vehi_claim_amount >0  else None
-    
+        data_clus = np.array([[cust_month,policy_deduc,sex[insured_sex],year,encoded_edu, age_box]  + coll_array + hobbies_array + rela_array + inc_array ])
+        st.write('Clustering Data:','\n',data_clus)
+        
+        if (cust_age is not None and cust_month is not None and cust_age > 0 and cust_month > 0 and button):
+            preds = kmeans.predict(data_clus)
+            st.write(preds)
+            
+        if button == 1:
+            st.markdown("# <span style='color:blue;'>Customer Insights:</span>", unsafe_allow_html=True)
+            st.markdown("""<p style='text-align: left; font-size: 22px; color: #ffffff; font-weight: 400; font-family: inherit;text-indent: 4em;'>
+         In this section, we will explore customer characteristics and behavior, tailored marketing strategies, product recommendations, 
+         cross-selling opportunities, and engagement strategies, all based on the input from customer profile details. </p>""", unsafe_allow_html=True)
+            
+            
+            st.markdown("## <span style='color:blue;'>Customer Segment Overview:</span>", unsafe_allow_html=True)
+            
+            if preds == 0:       
+                st.image('Cluster_0.png',use_column_width=True)            
+            
+            elif preds == 1:
+                st.image('Cluter_1.png',use_column_width=True)
+                
+            elif preds  == 2:
+                st.image('Cluster_2.png',use_column_width=True)
+            
+        
+    if selected2 == "Claim Amount Prediction":
+        col1, col, col2 = st.columns([2,.5,2])
+        
+        with col1:
+            collision_type = st.selectbox('Select Collision type:', collision_opt, help="Select Collision type",key='reg')
+            incident_severity = st.selectbox('Select Incident severity:', severity_opt, help="Select severity type")
+            policy_premium = st.number_input('Enter annual premium amount:', help="Enter annual premium amount",step = 100)
+            cust_month = st.number_input('Enter the Customer tenure ranges:', help="Enter the Customer tenure ranges. If new customer enter 0:",step = 1)
+            cust_age = st.number_input('Enter the Customer age:', help="Enter the Customer age:",step=1)
+            auto_make = st.selectbox('Select auto make:', make_opt, help="Select Vehicle make")
+            hobbies = st.selectbox('Select hobbies:', hobbies_opt,  help="Select hobbies") 
+            occupation = st.selectbox('Select occupation:', occu_opt,  help="Customer occupation")
+            vehi_claim_amount = st.number_input('Enter vehicle claim amount:', help="Enter vehicle claim amount",step = 100)
 
+
+
+
+        hobbies_array = [0] * len(hobbies_opt)
+        selected_hoobies_index = hobbies_opt.index(hobbies)
+        hobbies_array[selected_hoobies_index]= 1
+        
+        
+        
+        age_box = transform_single_value(cust_age, lambda_dict.get('age_boxcox')) if cust_age and cust_age > 0 else None
+        policy_premium_box = transform_single_value(policy_premium, lambda_dict.get('policy_annual_premium_boxcox')) if policy_premium and policy_premium > 0  else None
+        vehicle_claim_box = transform_single_value(vehi_claim_amount, lambda_dict.get('vehicle_claim_boxcox')) if vehi_claim_amount and vehi_claim_amount >0  else None
     
-    data_clus = np.array([[cust_month,policy_deduc,sex[insured_sex],year,encoded_edu, age_box]  + coll_array + hobbies_array + rela_array + inc_array ])
-    st.write('Clustering Data:','\n',data_clus)
-    
-    data_reg = np.array([[incident_severity, collision_type, policy_premium_box, cust_month, age_box, auto_make] + 
+        data_reg = np.array([[incident_severity, collision_type, policy_premium_box, cust_month, age_box, auto_make] + 
                          hobbies_array +  [occupation, vehicle_claim_box] ])
-    st.write('Regression Data:','\n',data_reg)
+        st.write('Regression Data:','\n',data_reg)
     
     
     
