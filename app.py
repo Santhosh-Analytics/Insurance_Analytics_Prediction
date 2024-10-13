@@ -11,6 +11,7 @@ from scipy.special import inv_boxcox
 import warnings
 from sklearn.preprocessing import StandardScaler, RobustScaler,MinMaxScaler,LabelEncoder
 
+
 # Set page configuration
 st.set_page_config(
     layout="wide",
@@ -65,21 +66,25 @@ st.markdown("""
     /* Button */
     .stButton>button {
         font-size: 22px;
-        background-color: #4CAF50;
+        background-color: Aquamarine;
         color: white;
-        border: none;
+        border: single;
+        border-width: 5px;
+        border-color: darkgreen;
         padding: 10px 20px;
         text-align: center;
-        text-decoration: none;
+        text-decoration: text-overflow;
         display: inline-block;
         margin: 4px 2px;
         cursor: pointer;
-        border-radius: 16px;
+        border-radius: 22px;
     }
     .stButton>button:hover {
-        background-color: #3e8e41;
-        color: Bisque;
-        font-size: 28px;
+        background-color: Aquamarine;
+        color: white;
+        font-size: 22px;
+        text-decoration: text-overflow;
+        transition: width 2s;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -122,9 +127,13 @@ def transform_single_value(value, lmbda):
     transformed_value = boxcox([value + np.spacing(1)], lmbda=lmbda)[0]
     return transformed_value
 
-
 def reverse_boxcox_transform(predicted, lambda_val):
+    # Convert predicted values to a numpy array to ensure compatibility
+    predicted = np.array(predicted, dtype=float).flatten()  # Flatten the array
+    if len(predicted) == 1:
+        predicted = predicted[0]  # If it's a single value, extract it
     return inv_boxcox(predicted, lambda_val)
+
 
 # Load the saved lambda values
 with open(r'pkls/transformations/transformation_params.pkl', 'rb') as f:
@@ -161,6 +170,15 @@ with open(f'pkls/Reg_EN/encoder_insured_occupation.pkl', 'rb') as f:
     occu_en = pickle.load(f)
 
 
+with open(f'pkls/en_class/edu_class.pkl', 'rb') as f:
+    edu_en_class = pickle.load(f)
+
+
+with open(f'pkls/en_class/severity_class.pkl', 'rb') as f:
+    severity_en_class = pickle.load(f)
+
+
+
 def encode_feature(value, encoder, feature_name):
     # Create a single-element DataFrame with the correct column name
     df = pd.DataFrame({feature_name: [value]})
@@ -182,7 +200,7 @@ def encode_months_as_customer(months):
         return en_list[closest_key]
     
 with st.sidebar:
-    st.markdown("<hr style='border: 2px solid #ffffff;'>", unsafe_allow_html=True)
+    st.markdown("<hr style='border: 4px solid #ffffff;'>", unsafe_allow_html=True)
 
     
     selected = option_menu(
@@ -202,54 +220,54 @@ with st.sidebar:
                               "font":"JetBrainsMono Nerd Font","border": "1px solid #ddd"}
         }
     )
-    st.markdown("<hr style='border: 2px solid #ffffff;'>", unsafe_allow_html=True)
+    st.markdown("<hr style='border: 4px solid #ffffff;'>", unsafe_allow_html=True)
 
 
     
 st.markdown("<h1 style='text-align: center; font-size: 38px; color: #ffffff; font-weight: 700; font-family: JetBrainsMono Nerd Font;'>Insurance Analytics & Insights</h1>", unsafe_allow_html=True)
 st.markdown("<h4 style='text-align: center; font-size: 26px; color: #ffffff; font-weight: 500; font-family: JetBrainsMono Nerd Font;'>Data-Driven Solutions for Customer Segmentation and Fraud Detection</h4>", unsafe_allow_html=True)
 
-st.markdown("<hr style='border: 2px solid beige;'>", unsafe_allow_html=True)
+st.markdown("<hr style='border: 4px solid beige;'>", unsafe_allow_html=True)
 
 
 if selected == "About":
     
-    st.markdown("<h3 style='text-align: center; font-size: 38px; color: #99b433; font-weight: 700; font-family: JetBrainsMono Nerd Font;'>Understanding Insurance Insights</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='text-align: center; font-size: 38px; color: Aquamarine; font-weight: 700; font-family: JetBrainsMono Nerd Font;'>Understanding Insurance Insights</h3>", unsafe_allow_html=True)
 
     st.markdown("<h3 style='font-size: 30px; text-align: left; font-family: JetBrainsMono Nerd Font; color: #da532c;'> Overview </h3>", unsafe_allow_html=True)
-    st.markdown("""<p style='text-align: left; font-size: 18px; color: #ffffff; font-weight: 400; font-family: JetBrainsMono Nerd Font;text-indent: 4em;'>
+    st.markdown("""<p style='text-align: left; font-size: 22px; color: #ffffff; font-weight: 400; font-family: JetBrainsMono Nerd Font;text-indent: 4em;'>
          The objective of this app is to leverage trained machine learning alogrithm to extract valuable insights from insurance data.
         By utilizing predictive models, this app provides data-driven insights to help insurance companies make Enhancing Decision-Making,
         Optimizing Risk Assessment, Improving Operational Efficiency.
 
 </p>""", unsafe_allow_html=True)
 
-    st.markdown("<h3 style='font-size: 34px; text-align: left; font-family: JetBrainsMono Nerd Font; color: #99b433;'> Instructions to use this app: </h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='font-size: 34px; text-align: left; font-family: JetBrainsMono Nerd Font; color: Aquamarine;'> Instructions to use this app: </h3>", unsafe_allow_html=True)
 
     st.markdown("<h3 style='font-size: 30px; text-align: left; font-family: JetBrainsMono Nerd Font; color: #da532c;'> Customer Profile Input: </h3>", unsafe_allow_html=True)
-    st.markdown("""<p style='text-align: left; font-size: 18px; color: #ffffff; font-weight: 400; font-family: JetBrainsMono Nerd Font;text-indent: 4em;'>
+    st.markdown("""<p style='text-align: left; font-size: 22px; color: #ffffff; font-weight: 400; font-family: JetBrainsMono Nerd Font;text-indent: 4em;'>
         Enter customer details such as age, gender, and policy information. The app will generate personalized segmentation and predictions.
 </p>""", unsafe_allow_html=True)
 
     st.markdown("<h3 style='font-size: 30px; text-align: left; font-family: JetBrainsMono Nerd Font; color: #da532c;'> Customer Insights: </h3>", unsafe_allow_html=True)
-    st.markdown("""<p style='text-align: left; font-size: 18px; color: #ffffff; font-weight: 400; font-family: JetBrainsMono Nerd Font;text-indent: 4em;'>
+    st.markdown("""<p style='text-align: left; font-size: 22px; color: #ffffff; font-weight: 400; font-family: JetBrainsMono Nerd Font;text-indent: 4em;'>
         See detailed customer segmentation, marketing strategies, risk profiles, and predictions for fraud detection and premium pricing based on the input data.
     </p>""", unsafe_allow_html=True)
 
-    st.markdown("""<p style='text-align: left; font-size: 18px; color: #ffffff; font-weight: 400; font-family: JetBrainsMono Nerd Font;text-indent: 4em;'>
+    st.markdown("""<p style='text-align: left; font-size: 22px; color: #ffffff; font-weight: 400; font-family: JetBrainsMono Nerd Font;text-indent: 4em;'>
         Whether you're an underwriter, risk manager, or marketer, this app provides actionable insights to help you make data-driven decisions that benefit both your business and your customers.
     </p>""", unsafe_allow_html=True)
 
-    st.markdown("<hr style='border: 2px solid #ffffff;'>", unsafe_allow_html=True)
+    st.markdown("<hr style='border: 4px solid #ffffff;'>", unsafe_allow_html=True)
 
     st.markdown("<h3 style='font-size: 30px; text-align: left; font-family: JetBrainsMono Nerd Font; color: #da532c;'> Contributing </h3>", unsafe_allow_html=True)
     github_url = "https://github.com/Santhosh-Analytics/Singapore-Resale-Flat-Prices-Predicting"
-    st.markdown("""<p style='text-align: left; font-size: 18px;text-indent: 4em; color: #ffffff; font-weight: 400; font-family: JetBrainsMono Nerd Font;'>
+    st.markdown("""<p style='text-align: left; font-size: 22px;text-indent: 4em; color: #ffffff; font-weight: 400; font-family: JetBrainsMono Nerd Font;'>
         Contributions to this project are welcome. If you find any issues or have suggestions for improvements, please open an issue or submit a pull request in the <a href="{}">GitHub Repository</a>.
     </p>""".format(github_url), unsafe_allow_html=True)
 
 if selected == "Customer Insights and Predictions":
-    # st.title("")
+    
 
     selected2 = option_menu(None, ["Customer Characteristics", "Fraud Detection", "Claim Amount Prediction"], 
     icons=['house', 'cloud-upload', "list-task"], 
@@ -265,7 +283,7 @@ if selected == "Customer Insights and Predictions":
                               "font":"JetBrainsMono Nerd Font","border": "1px solid #ddd"}
     }
         )
-    st.markdown("<h4 style='text-align: center; font-size: 36px; color: #99b433; font-weight: 500; font-family: JetBrainsMono Nerd Font;'>Customer Profile</h4>", unsafe_allow_html=True)
+    st.markdown("<h4 style='text-align: center; font-size: 36px; color: Aquamarine; font-weight: 500; font-family: JetBrainsMono Nerd Font;'>Customer Profile</h4>", unsafe_allow_html=True)
 
     # Options for various dropdowns
     states = ('OH', 'IL', 'IN')
@@ -293,6 +311,7 @@ if selected == "Customer Insights and Predictions":
     injury_opt = [0, 1, 2]
     wit_opt = [0, 1, 2, 3]
     fir_opt = ['NO', 'YES']
+    inc_state_opt = ['NC', 'NY', 'OH', 'PA', 'SC', 'VA', 'WV']
     
     
     
@@ -403,9 +422,9 @@ if selected == "Customer Insights and Predictions":
         if (cust_age is not None and cust_month is not None and cust_age > 0 and cust_month > 0 and button):
             preds = kmeans.predict(data_clus)
             st.write(preds)
-            
+        st.markdown("<hr style='border: 4px solid #ffffff;'>", unsafe_allow_html=True)
         if button == 1:
-            st.markdown("# <span style='color:#99b433;'>Customer Insights:</span>", unsafe_allow_html=True)
+            st.markdown("# <span style='color:Aquamarine;'>Customer Insights:</span>", unsafe_allow_html=True)
             st.markdown("""<p style='text-align: left; font-size: 22px; color: #ffffff; font-weight: 400; font-family: JetBrainsMono Nerd Font;text-indent: 4em;'>
          In this section, we will explore customer characteristics and behavior, tailored marketing strategies, product recommendations, 
          cross-selling opportunities, and engagement strategies, all based on the input from customer profile details. </p>""", unsafe_allow_html=True)
@@ -423,7 +442,7 @@ if selected == "Customer Insights and Predictions":
                 st.image('Cluster_2.png',use_column_width=True)
             
         
-    if selected2 == "Claim Amount Prediction":
+    elif selected2 == "Claim Amount Prediction":
         col1, col, col2 = st.columns([2,.5,2])
         
         with col1:
@@ -440,14 +459,6 @@ if selected == "Customer Insights and Predictions":
             cust_age = st.number_input('Enter the Customer age:', help="Enter the Customer age:",step=1)
             hobbies = st.selectbox('Select hobbies:', hobbies_opt,  help="Select hobbies") 
             selected_date = st.date_input("Select Insurance bind date", date.today(),min_value=date(1995,1,1))
-            
-            
-
-            
-            
-
-
-
         
         
         severity = {'Trivial Damage': 1, 'Major Damage': 2, 'Minor Damage': 3, 'Total Loss': 4}
@@ -467,122 +478,138 @@ if selected == "Customer Insights and Predictions":
         policy_premium_box = transform_single_value(policy_premium, lambda_dict.get('policy_annual_premium_boxcox')) if policy_premium and policy_premium > 0  else None
         vehicle_claim_box = transform_single_value(vehi_claim_amount, lambda_dict.get('vehicle_claim_boxcox')) if vehi_claim_amount and vehi_claim_amount >0  else None
     
+        st.markdown("<hr style='border: 4px solid #ffffff;'>", unsafe_allow_html=True)
+
         data_reg = np.array([[incident_severity_map, collision_type_encoded, policy_premium_box, encoded_months, age_box, 
                               insurance_age,auto_make_encoded,hobbies_encoded,occupation_encoded, vehicle_claim_box] ])
         st.write('Regression Data:','\n',data_reg)
 
-        button = st.button('Get Insights!') if (cust_age is not None and cust_month is not None and cust_age > 0 and cust_month > 0) else st.markdown(texts,unsafe_allow_html=True)
+        button = st.button('Get Insights!') if (cust_age is not None and cust_month is not None and vehicle_claim_box is not None and policy_premium_box is not None and cust_age > 0 and cust_month > 0 and vehicle_claim_box > 0 and policy_premium_box > 0) else st.markdown(texts,unsafe_allow_html=True)
         preds=0
         
-        if button:
+        if (button and cust_age is not None and cust_month is not None and vehicle_claim_box is not None and policy_premium_box is not None and cust_age > 0 and cust_month > 0 and vehicle_claim_box > 0 and policy_premium_box > 0):
             preds = Reg_model.predict(data_reg)
-            st.write(preds)
             
+            lambda_val = lambda_dict.get('total_claim_amount_boxcox')
+            
+            st.balloons()
+
+            reversed_preds = reverse_boxcox_transform(preds,lambda_val)
+            
+            st.write(" ")
+            
+            st.markdown(f"""<p style='text-align: left; font-size: 22px; color: #ffffff; font-weight: 400; font-family: JetBrainsMono Nerd Font;text-indent: 0em;'>
+                Predicted Claim amount is {reversed_preds:,.2f} USD </p>""", unsafe_allow_html=True)
+            
+            st.snow()
+    
                    
-    
-    
-    # fea2 = ['incident_severity', 'collision_type','policy_annual_premium_boxcox', 'months_as_customer','age_boxcox',
-    #     'insurance_age','auto_make','insured_hobbies','insured_occupation','vehicle_claim_boxcox',]
-    
-    # Continuous columns: ['age_boxcox', 'policy_annual_premium_boxcox', 'insurance_age', 'vehicle_age', 'auto_year']
-    # Nominal columns: ['policy_state', 'insured_sex', 'insured_occupation', 'insured_hobbies', 'insured_relationship', 'incident_type', 'collision_type', 'authorities_contacted', 'incident_state', 'incident_city', 'property_damage', 'police_report_available', 'auto_make', 'fraud_reported']
-    
-    # st.write(scale_reg)
-    # scaled_data_reg = scale_reg.transform(data_reg)
-    # st.write(scaled_data_reg)
-    
-    
-    # st.session_state.data_clus = data_clus
-    # st.session_state.data_reg = data_reg
-
-    # if button:
-        # if st.session_state.data_clus is not None and st.session_state.data_reg is not None:
-            # try:
-                # Your prediction logic here
-                # kmeans_prediction = kmeans.predict(st.session_state.data_clus)
-                # class_prediction = Class_model.predict(st.session_state.data_clus)
-                # reg_prediction = Reg_model.predict(st.session_state.data_clus)
-                
-                # Store predictions in session state
-                # st.session_state.prediction = {
-                #     'kmeans': kmeans_prediction,
-                    # 'classification': class_prediction,
-                    # 'regression': reg_prediction
-                # }
-                
-                # Set flag to navigate to Customer Insights
-    #             st.session_state.current_page = "Customer Insights"
-    #             st.experimental_rerun()
-    #         except Exception as e:
-    #             st.error(f"Error: {e}")
-    # else:
-    #     st.warning("Please enter customer data before running the prediction.")
-                
-        # st.write(prediction)
-        # lambda_val = lambda_dict['resale_price_lambda'] 
-        # transformed_predict=reverse_boxcox_transform(prediction, lambda_val) if data is not None else None
-        # rounded_prediction = round(transformed_predict[0],2)
-        # st.success(f"Based on the input, the Genie's price is,  {rounded_prediction:,.2f}")
-        # st.info(f"On average, Genie's predictions are within approximately 10 to 20% of the actual market prices.")
-    # else:
-    st.write('End of profile')
-elif selected == "Customer Insights":
-    
-    st.markdown("# <span style='color:blue;'>Customer Insights:</span>", unsafe_allow_html=True)
-
-    st.markdown("""<p style='text-align: left; font-size: 22px; color: #ffffff; font-weight: 400; font-family: JetBrainsMono Nerd Font;text-indent: 4em;'>
-         In this section, we will explore customer characteristics and behavior, tailored marketing strategies, product recommendations, 
-         cross-selling opportunities, and engagement strategies, all based on the input from customer profile details.
-
-</p>""", unsafe_allow_html=True)
-    
-    # if st.button("Go Back"):
-        # st.session_state.current_page = "Customer Profile Input"
-        # st.experimental_rerun()
-    
-    selected2 = option_menu(None, ["Segment Overview", "Fraud Detection", "Claim Amount Prediction"], 
-    icons=['house', 'cloud-upload', "list-task"], 
-    menu_icon="cast", default_index=0, orientation="horizontal",
-    styles={
-        "container": {"padding": "0!important", "background-color": "#fafafa"},
-        "icon": {"color": "orange", "font-size": "25px"}, 
-        "nav-link": {"font-size": "25px", "text-align": "left", "margin":"0px", "--hover-color": "#eee"},
-        "nav-link-selected": {"background-color": "green"},
-    }
-        )
-    
-    
-    
-    if selected2 == 'Segment Overview':
-        st.markdown("## <span style='color:blue;'>Customer Segment Overview:</span>", unsafe_allow_html=True)
-        st.markdown(texts, unsafe_allow_html=True)
-        if st.button('Test'):
-            selected2 == "Fraud Detection"
         
-        if 'prediction' in st.session_state and st.session_state.prediction is not None and 'kmeans' in st.session_state.prediction:
-            # kmeans_prediction = st.session_state.prediction['kmeans']
-            st.write("K-means Prediction:", st.session_state.prediction['kmeans'])
-            if st.session_state.prediction['kmeans'] == 0:
-                st.write("K-means Prediction:", st.session_state.prediction['kmeans'])
-                st.image('Cluster_0.png',use_column_width=True)            
-            
-            elif 'prediction' in st.session_state and st.session_state.prediction['kmeans'] == 1:
-                st.image('Cluter_1.png',use_column_width=True)
-                
-            elif 'prediction' in st.session_state and st.session_state.prediction['kmeans'] == 2:
-                st.image('Cluster_2.png',use_column_width=True)
-            
-        else:
-            st.markdown(texts, unsafe_allow_html=True)
+    elif selected2 == "Fraud Detection":
+        
+        col1, cola, col2, colb, col3 = st.columns([2,.25,2, .25, 2])
+    
 
-            st.info("No prediction available. Please update data in the 'Cutomer Profile Input' and hit 'Get Insights'.")
+        with col1:
+            
+            cust_age = st.number_input('Enter the Customer age:', help="Enter the Customer age:",step=1)
+            cust_month = st.number_input('Enter the Customer tenure ranges:', help="Enter the Customer tenure ranges. If new customer enter 0:",step = 1)
+            insured_sex = st.selectbox('Select gender:', ['Male', 'Female'],  help="Customer Gender")
+            education = st.selectbox('Select education:', edu_opt, help="Customer education Level")
+            occupation = st.selectbox('Select occupation:', occu_opt,  help="Customer occupation")
+            hobbies = st.selectbox('Select hobbies:', hobbies_opt,  help="Select hobbies") 
+            insured = st.selectbox('Select insured relation:', insured_opt,  help="Select insured relation")
+            auto_make = st.selectbox('Select auto make:', make_opt, help="Select Vehicle make")
+            year = st.selectbox('Select make year:', [i for i in range(1994, 2016)],  help="Select Vehicle make year")
+            
+        with col2:
+            
+            policy_premium = st.number_input('Enter annual premium amount:', help="Enter annual premium amount",step = 100)            
+            selected_date = st.date_input("Select Insurance bind date", date.today(),min_value=date(1995,1,1))
+            policy_deduc = st.selectbox('Select deductable:', policy_deduc_opt,  help="Portion of a claim that policy holder responsible to pay." )
+            policy_state = st.selectbox('Select policy State:', states    ,  help="Select Policy State/Location" )
+            inc_date = st.date_input("Select Incident  date", date.today())
+            inc_State = st.selectbox('Incident State:', inc_state_opt, help="Select the state where the incident occured.")
+            city = st.selectbox('Incident City:', city_opt, help="City where the incodent occured.")
+            incident_type = st.selectbox('Select incident type:', incident_opt,  help="Select incident type") 
+            incident_severity = st.selectbox('Select Incident severity:', severity_opt, help="Select severity type")
+            
+        
+        
+        with col3:
+            hour = st.selectbox('Incident Time:', hour_opt, help="Time when the incodent occured.")
+            no_of_veh = st.selectbox('No of Vehicle Involved:', vehicle_opt, help="Vehicles count that met with an incident.")
+            prpty_dmg = st.selectbox('Property Damage:', prpty_dmg_opt, help="Any property damaged due to the incident.")
+            injury = st.selectbox('Injury:', injury_opt, help="No of people injured.")
+            wit = st.selectbox('No of witness:', wit_opt, help="No of witness for the incident.")
+            fir = st.selectbox('Police Report:', fir_opt, help="Reported to police.")        
+            collision_type = st.selectbox('Select Collision type:', collision_opt, help="Select Collision type")
+            auth = st.selectbox('Authority Contacted:', auth_opt, help="Has any goverment authority contacted?")
+            class_button = st.button('Detector')
+            
+            
+        edu_en = edu_en_class.transform([education])
+        severity_en = severity_en_class.transform([incident_severity])
+        
 
+        age_box = transform_single_value(cust_age, lambda_dict.get('age_boxcox')) if cust_age and cust_age > 0 else None
+        policy_premium_box = transform_single_value(policy_premium, lambda_dict.get('policy_annual_premium_boxcox')) if policy_premium and policy_premium > 0  else None
+        insurance_age = (inc_date.year - selected_date.year) 
+        vehi_age = (inc_date.year - year )
+        sex = {'Male': 1, 'Female':0}
+        property_damage_map = { 'NO':0, 'YES':1 }
+        police_report_available_map = { 'NO':0, 'YES':1 }
+        fraud_reported_map = { 'N':0, 'Y':1 }
+        
+        policy_state_array = [0] * len(states)
+        policy_state_selected_index = states.index(policy_state)
+        policy_state_array[policy_state_selected_index]= 1
+        
+        coll_array = [0] * len(collision_opt)
+        selected_index = collision_opt.index(collision_type)
+        coll_array[selected_index]= 1
     
-    
-    
-    if st.session_state.prediction is not None:
-        st.write("K-means Prediction:", st.session_state.prediction['kmeans'])
-        # st.write("Classification Prediction:", st.session_state.prediction['classification'])
-        # st.write("Regression Prediction:", st.session_state.prediction['regression'])
-    else:
-        st.info("No prediction available. Please update data in the 'Cutomer Profile Input' and hit 'Get Insights'.")
+        
+        inc_array = [0] * len(incident_opt)
+        selected_inc_index = incident_opt.index(incident_type)
+        inc_array[selected_inc_index]= 1
+        
+        
+        rela_array = [0] * len(insured_opt)
+        selected_rela_index = insured_opt.index(insured)
+        rela_array[selected_rela_index]= 1
+        
+        
+        hobbies_array = [0] * len(hobbies_opt)
+        selected_hoobies_index = hobbies_opt.index(hobbies)
+        hobbies_array[selected_hoobies_index]= 1
+        
+        occu_array = [0] * len(occu_opt)
+        occ_selected_index = occu_opt.index(occupation)
+        occu_array[occ_selected_index]= 1
+        
+        auth_contact_array = [0] * len(auth_opt)
+        auth_contact_selected_index = auth_opt.index(auth)
+        auth_contact_array[auth_contact_selected_index]= 1
+        
+        inc_state_array = [0] * len(inc_state_opt)
+        inc_state_array_selected_index = inc_state_opt.index(inc_State)
+        inc_state_array[inc_state_array_selected_index] = 1
+        
+        inc_city_array = [0] * len(city_opt)
+        inc_city_selected_index = city_opt.index(city)
+        inc_city_array[inc_city_selected_index] = 1
+        
+        auto_make_array = [0] * len(make_opt)
+        auto_make_selected_index = make_opt.index(auto_make)
+        auto_make_array[auto_make_selected_index] = 1
+        
+        
+        data_class = np.array([[cust_age, policy_premium_box, insurance_age, vehi_age, year, policy_deduc, cust_month, sex[insured_sex],
+                               edu_en[0],severity_en[0],hour, no_of_veh, property_damage_map[prpty_dmg], injury, wit, police_report_available_map[fir],
+                               ] + policy_state_array + hobbies_array + occu_array + rela_array + inc_array + coll_array + auth_contact_array + inc_state_array + inc_city_array
+                               + auto_make_array])
+        
+                              
+                              
+        st.write('Classification Data:','\n',data_class)
