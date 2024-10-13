@@ -178,6 +178,8 @@ with open(f'pkls/en_class/severity_class.pkl', 'rb') as f:
     severity_en_class = pickle.load(f)
 
 
+with open(f'pkls/scaling/class_scale.pkl', 'rb') as f:
+    class_scale = pickle.load(f)
 
 def encode_feature(value, encoder, feature_name):
     # Create a single-element DataFrame with the correct column name
@@ -545,7 +547,8 @@ if selected == "Customer Insights and Predictions":
             fir = st.selectbox('Police Report:', fir_opt, help="Reported to police.")        
             collision_type = st.selectbox('Select Collision type:', collision_opt, help="Select Collision type")
             auth = st.selectbox('Authority Contacted:', auth_opt, help="Has any goverment authority contacted?")
-            class_button = st.button('Detector')
+            st.write(' ')
+            class_button = st.button('Detector') if (policy_premium is not None and cust_age is not None and cust_month is not None and policy_premium > 0 and cust_age > 0 and cust_month > 0 ) else st.markdown(texts,unsafe_allow_html=True)
             
             
         edu_en = edu_en_class.transform([education])
@@ -605,11 +608,42 @@ if selected == "Customer Insights and Predictions":
         auto_make_array[auto_make_selected_index] = 1
         
         
-        data_class = np.array([[cust_age, policy_premium_box, insurance_age, vehi_age, year, policy_deduc, cust_month, sex[insured_sex],
+        data_class = np.array([[age_box, policy_premium_box, insurance_age, vehi_age, year, policy_deduc, cust_month, sex[insured_sex],
                                edu_en[0],severity_en[0],hour, no_of_veh, property_damage_map[prpty_dmg], injury, wit, police_report_available_map[fir],
                                ] + policy_state_array + hobbies_array + occu_array + rela_array + inc_array + coll_array + auth_contact_array + inc_state_array + inc_city_array
                                + auto_make_array])
         
-                              
-                              
+        # Indices_mapper = ['age_box', 'policy_premium_box', 'insurance_age',' vehi_age', 'year', 'policy_deduc', cust_month, sex[insured_sex],
+        #                        edu_en[0],severity_en[0],hour, no_of_veh, property_damage_map[prpty_dmg], injury, wit, police_report_available_map[fir],
+        #                        ]
+        # continuous = ['age_box', 'policy_premium_box', 'insurance_age', 'vehi_age', 'year', 'policy_deduc']
+        
+        # continuous_indices = [data_class.index(col) for col in continuous]
+
+        dummy_features= [0] * 4
+
+        scale_data = np.hstack((data_class[:, :2], np.array([dummy_features]), data_class[:, 2:6]))
+
         st.write('Classification Data:','\n',data_class)
+       
+        
+        if (class_button and policy_premium is not None and cust_age is not None and cust_month is not None and policy_premium > 0 and cust_age > 0 and cust_month > 0 ):
+            
+            scaled_data_class = class_scale.transform(scale_data)
+            
+            # st.write('Classification Data Scaled:','\n',scaled_data_class)
+            
+            scaled_data_class_required= np.delete(scaled_data_class,[2,3,4,5],axis=1)
+            
+            data_class_refined = np.delete(data_class,[0,1,2,3,4,5], axis=1)
+            
+            final_data = np.hstack((scaled_data_class_required,data_class_refined))
+            
+            predict = Class_model.predict(final_data)
+            
+            
+            st.write(final_data,'\n', predict)
+            
+        else:
+            None
+            # st.markdown(texts,unsafe_allow_html=True)
