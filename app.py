@@ -47,30 +47,23 @@ st.markdown("""
         padding: 10px 20px;
         margin: 10px 2px;
         border-radius: 10px;
-        
     }
     div.stTabs [data-baseweb="tab-list"] button[aria-selected="true"] {
         background-color: #009688;
         color: white;
-        
     }
-
     div.stTabs [data-baseweb="tab-list"] button:hover {
         background-color: #3e8e41;
         color: white;
-        margin: 0px;
-        cursor: pointer;
-        shadow: 0 4px 8px #ddd;
-        
     }
     /* Button */
     .stButton>button {
         font-size: 22px;
-        background-color: Aquamarine;
+        background-color: darkgreen;
         color: white;
         border: single;
         border-width: 5px;
-        border-color: darkgreen;
+        border-color: #3e8e41;
         padding: 10px 20px;
         text-align: center;
         text-decoration: text-overflow;
@@ -80,11 +73,14 @@ st.markdown("""
         border-radius: 22px;
     }
     .stButton>button:hover {
-        background-color: Aquamarine;
-        color: white;
-        font-size: 22px;
-        text-decoration: text-overflow;
-        transition: width 2s;
+        background-color: forestgreen !important;
+        color: white !important;
+        border: signle !important;
+        border-width: 5px !important;
+        border-color: Darkgreen !important;
+        font-size: 22px !important;
+        text-decoration: text-overflow !important;
+        transition: width 2s !important;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -95,7 +91,7 @@ st.markdown(
     """
     <style>
     .custom-info-box {
-        background-color: #D6E4FF;  /* Background color similar to st.info */
+        background-color: rgba(61, 157, 243, 0.2);  /* Background color similar to st.info */
         padding: 10px;  /* Add some padding for spacing */
         border-left: 10px solid #1E88E5;  /* Add a colored border on the left */
         border-right: 10px solid #1E88E5;
@@ -212,14 +208,14 @@ with st.sidebar:
         default_index=0,
         key='menu_option',
         styles={
-            "container": {"padding": "12!important", "background-color": "#fafafa","border-radius": "10px","transparency":"real",
-                      "box-shadow": "0 4px 8px #ddd","font":"JetBrainsMono Nerd Font","border": "1px solid #ddd",},
-            "icon": {"color": "orange", "font-size": "25px", "font-family": "JetBrainsMono Nerd Font","box-shadow": "0 4px 8px #ddd","text-shadow": "1px 1px 2px rgba(0, 0, 0, 0.2)"},
-            "nav-link": {"font-size": "29px", "color": "#ffffff", "text-align": "left", "margin": "0px", 
-                         "--hover-color": "#eee","box-shadow": "0 4px 8px #ddd","font":"JetBrainsMono Nerd Font","border": "1px solid #ddd", "cursor": "pointer", 
-                     "transition": "background-color 0.3s ease, color 0.3s ease" },
-            "nav-link-selected": {"background-color": "Aquamarine", "border-radius":"15px","transparency":"real","box-shadow": "0 4px 8px #ddd",
-                              "font":"JetBrainsMono Nerd Font","border": "1px solid #ddd"}
+            "container": {"padding": "1 !important", "background-color": "black","border-radius": "15px",
+                      "font":"JetBrainsMono Nerd Font","border": "1px solid grey"},
+            "icon": {"color": "orange", "font-size": "25px", "font-family": "JetBrainsMono Nerd Font",},
+            "nav-link": {"font-size": "20px", "color": "#ffffff", "text-align": "left", "margin": "2px", 
+                         "--hover-color": "#000000ee","box-shadow": "0 2px 4px Coral","font":"JetBrainsMono Nerd Font","border": "1px solid Coral", "cursor": "pointer", 
+                     "transition": "background-color 0.5s ease, color 0.5s ease","text-shadow": "0px 2px 4px rgba(0, 0, 0, 0.2)" },
+            "nav-link-selected": {"background-color": "Coral", "border-radius":"25px",
+                              "font":"JetBrainsMono Nerd Font","border": "0px solid #ddd"}
         }
     )
     st.markdown("<hr style='border: 4px solid #ffffff;'>", unsafe_allow_html=True)
@@ -275,16 +271,17 @@ if selected == "Customer Insights and Predictions":
     icons=['house', 'cloud-upload', "list-task"], 
     menu_icon="cast", default_index=0, orientation="horizontal",
     styles={
-        "container": {"padding": "0!important", "background-color": "#fafafa","border-radius": "10px","transparency":"real",
-                      "box-shadow": "0 4px 8px #ddd","font":"JetBrainsMono Nerd Font","border": "1px solid #ddd","text-align":"center"},
-        "icon": {"color": "orange", "font-size": "25px","box-shadow": "0 4px 8px #ddd","text-shadow": "1px 1px 2px rgba(0, 0, 0, 0.2)" }, 
+        "container": {"padding": "0!important", "background-color": "darkgreen","border-radius": "10px","font":"JetBrainsMono Nerd Font","border": "1px solid #ddd","text-align":"center"},
+        "icon": {"color": "black", "font-size": "25px", }, 
         "nav-link": {"font-size": "25px", "text-align": "left", "margin":"0px", "--hover-color": "#eee","box-shadow": "0 4px 8px #ddd",
-                     "font":"JetBrainsMono Nerd Font","border": "1px solid #ddd", "cursor": "pointer", 
+                     "font":"JetBrainsMono Nerd Font","border": "1px solid #ddd","color": "black", "cursor": "pointer", 
                      "transition": "background-color 0.3s ease, color 0.3s ease","text-align":"center" },
-        "nav-link-selected": {"background-color": "Bisque", "border-radius":"15px","transparency":"real","box-shadow": "0 4px 8px #ddd",
+        "nav-link-selected": {"background-color": "Chocolate", "border-radius":"25px","box-shadow": "0 4px 8px #ddd",
                               "font":"JetBrainsMono Nerd Font","border": "1px solid #ddd"}
     }
         )
+    
+    
     st.markdown("<h4 style='text-align: center; font-size: 36px; color: Aquamarine; font-weight: 500; font-family: JetBrainsMono Nerd Font;'>Customer Profile</h4>", unsafe_allow_html=True)
 
     # Options for various dropdowns
@@ -419,11 +416,11 @@ if selected == "Customer Insights and Predictions":
         
     
         data_clus = np.array([[cust_month,policy_deduc,sex[insured_sex],year,encoded_edu, age_box]  + coll_array + hobbies_array + rela_array + inc_array ])
-        st.write('Clustering Data:','\n',data_clus)
+        # st.write('Clustering Data:','\n',data_clus)
         
         if (cust_age is not None and cust_month is not None and cust_age > 0 and cust_month > 0 and button):
             preds = kmeans.predict(data_clus)
-            st.write(preds)
+            # st.write(preds)
         st.markdown("<hr style='border: 4px solid #ffffff;'>", unsafe_allow_html=True)
         if button == 1:
             st.markdown("# <span style='color:Aquamarine;'>Customer Insights:</span>", unsafe_allow_html=True)
@@ -484,7 +481,7 @@ if selected == "Customer Insights and Predictions":
 
         data_reg = np.array([[incident_severity_map, collision_type_encoded, policy_premium_box, encoded_months, age_box, 
                               insurance_age,auto_make_encoded,hobbies_encoded,occupation_encoded, vehicle_claim_box] ])
-        st.write('Regression Data:','\n',data_reg)
+        # st.write('Regression Data:','\n',data_reg)
 
         button = st.button('Get Insights!') if (cust_age is not None and cust_month is not None and vehicle_claim_box is not None and policy_premium_box is not None and cust_age > 0 and cust_month > 0 and vehicle_claim_box > 0 and policy_premium_box > 0) else st.markdown(texts,unsafe_allow_html=True)
         preds=0
@@ -624,10 +621,10 @@ if selected == "Customer Insights and Predictions":
 
         scale_data = np.hstack((data_class[:, :2], np.array([dummy_features]), data_class[:, 2:6]))
 
-        st.write('Classification Data:','\n',data_class)
+        # st.write('Classification Data:','\n',data_class)
        
-        
-        if (class_button and policy_premium is not None and cust_age is not None and cust_month is not None and policy_premium > 0 and cust_age > 0 and cust_month > 0 ):
+        # st.write(None not in scale_data)
+        if class_button and None not in scale_data:
             
             scaled_data_class = class_scale.transform(scale_data)
             
@@ -642,8 +639,14 @@ if selected == "Customer Insights and Predictions":
             predict = Class_model.predict(final_data)
             
             
-            st.write(final_data,'\n', predict)
+            # st.write(final_data,'\n', predict)
+            
+            if predict == 0:
+                st.success("The transaction is predicted to be legitimate. No fraudulent activity detected.")
+                
+            else:
+                st.warning("Alert! The transaction is predicted to be fraudulent. Please review it carefully.")
             
         else:
-            None
+            pass
             # st.markdown(texts,unsafe_allow_html=True)

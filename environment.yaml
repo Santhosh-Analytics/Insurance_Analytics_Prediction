@@ -1,0 +1,28 @@
+name: /run/media/E_Drive/Technology/Python Project/Capstone/Insurance_Analytics_Prediction/ins
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10
+  - pandas
+  - numpy
+  - seaborn
+  - matplotlib
+  - kneed
+  - scipy
+  - streamlit
+  - streamlit_option_menu
+  - xgboost
+  - colorama
+  - statsmodels
+  - pillow
+  - wordcloud
+  - category_encoders
+  - ca-certificates
+  - openssl
+  - pylint
+  - flake8
+  - certifi
+  - black
+  - imbalanced-learn
+prefix: /run/media/E_Drive/Technology/Python Project/Capstone/Insurance_Analytics_Prediction/ins
