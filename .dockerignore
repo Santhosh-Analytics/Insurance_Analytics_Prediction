@@ -1,0 +1,14 @@
+ins/   
+ins/
+.git
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.DS_Store
+ins/
+ins/
+./ins
+/ins
+ins
+

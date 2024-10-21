@@ -1,4 +1,4 @@
-name: /run/media/E_Drive/Technology/Python Project/Capstone/Insurance_Analytics_Prediction/ins
+name: ins
 channels:
   - conda-forge
   - defaults
@@ -25,4 +25,4 @@ dependencies:
   - certifi
   - black
   - imbalanced-learn
-prefix: /run/media/E_Drive/Technology/Python Project/Capstone/Insurance_Analytics_Prediction/ins
+prefix: ins
