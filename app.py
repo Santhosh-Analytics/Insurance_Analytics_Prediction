@@ -1,21 +1,18 @@
-import pandas as pd
-import numpy as np
-from PIL import Image
-import streamlit as st
-from scipy import stats
-from scipy.stats import boxcox
 import pickle
-from datetime import date, timedelta
-from streamlit_option_menu import option_menu
-from scipy.special import inv_boxcox
 import warnings
-from sklearn.preprocessing import (
-    StandardScaler,
-    RobustScaler,
-    MinMaxScaler,
-    LabelEncoder,
-)
+from datetime import date, timedelta
 
+import joblib
+import numpy as np
+import pandas as pd
+import streamlit as st
+from PIL import Image
+from scipy import stats
+from scipy.special import inv_boxcox
+from scipy.stats import boxcox
+from sklearn.preprocessing import (LabelEncoder, MinMaxScaler, RobustScaler,
+                                   StandardScaler)
+from streamlit_option_menu import option_menu
 
 # Set page configuration
 st.set_page_config(
@@ -91,7 +88,6 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
-
 # Injecting custom styling to display info
 
 st.markdown(
@@ -157,8 +153,10 @@ with open(r"pkls/ADA_Classifier.pkl", "rb") as f:
     Class_model = pickle.load(f)
 
 
-with open(r"pkls/GB_Regressor.pkl", "rb") as f:
-    Reg_model = pickle.load(f)
+# with open(r"pkls/GB_Regressor1.pkl", "rb") as f:
+#     Reg_model = joblib.load(f)
+Reg_model = joblib.load(r"pkls/GB_Regressor1.pkl")
+
 
 with open(f"pkls/Reg_EN/encoder_collision_type.pkl", "rb") as f:
     coll_type_en = pickle.load(f)
@@ -603,7 +601,7 @@ with st.sidebar:
 
     selected = option_menu(
         "Main Menu",
-        ["About", "Customer Insights and Predictions", "Customer Insights"],
+        ["About", "Customer Insights and Predictions"],
         icons=["house-door-fill", "bar-chart-fill"],
         menu_icon="cast",
         default_index=0,
@@ -723,7 +721,9 @@ if selected == "About":
     st.markdown(
         """<p style='text-align: left; font-size: 22px;text-indent: 4em; color: #ffffff; font-weight: 400; font-family: JetBrainsMono Nerd Font;'>
         Contributions to this project are welcome. If you find any issues or have suggestions for improvements, please open an issue or submit a pull request in the <a href="{}">GitHub Repository</a>.
-    </p>""".format(github_url),
+    </p>""".format(
+            github_url
+        ),
         unsafe_allow_html=True,
     )
 
@@ -1170,7 +1170,7 @@ if selected == "Customer Insights and Predictions":
         # st.write('Regression Data:','\n',data_reg)
 
         button = (
-            st.button("Get Insights!")
+            st.button("Get Predictions!")
             if (
                 cust_age is not None
                 and cust_month is not None
